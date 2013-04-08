@@ -77,13 +77,13 @@ if [[ $TERM = dumb ]]; then
 else
     precmd () { print -rP $'%#%# %B%!%b %B%m%b:%~' }
     case $TERM in
-    xterm*|rxvt|screen)
+    xterm*|rxvt*|screen)
         precmd () {
-            print -rPn $'\033]0;%# - %m:%~\007'
-            print -rP $'%#%# %B%!%b %B%m%b:%~'
+            print -Pn "\e]0;%# - %m:%~\a"
+            print -P '%#%# %B%!%b %B%m%b:%~'
         }
         preexec () {
-            print -rPn $'\033]0;'"$1"$' - %m:%~\007'
+            printf "\e]0;%s - %s\a" "$1" "${(%):-'%m:%~'}"
         }
         ;;
     esac
