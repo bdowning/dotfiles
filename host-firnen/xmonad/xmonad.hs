@@ -55,6 +55,6 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList [
   ((modm, xK_r     ), shellPrompt  defaultXPConfig),
   ((modm, xK_Escape), toggleWS),
   ((0, xF86XK_AudioMute), spawn "amixer -q set Master toggle"),
-  ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q set Master 3dB+ unmute"),
-  ((0, xF86XK_AudioLowerVolume), spawn "amixer -q set Master 3dB- unmute")
+  ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q set Master 5%+ unmute"),
+  ((0, xF86XK_AudioLowerVolume), spawn "amixer -q set Master 5%- unmute")
   ]
