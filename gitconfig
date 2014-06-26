@@ -1,0 +1,7 @@
+[user]
+	name = Brian Downing
+	email = bdowning@lavos.net
+[color]
+	ui = auto
+[push]
+	default = simple
