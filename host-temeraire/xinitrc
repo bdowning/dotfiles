@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if [ -d /etc/X11/xinit/xinitrc.d ]; then
+  for f in /etc/X11/xinit/xinitrc.d/*; do
+    [ -x "$f" ] && . "$f"
+  done
+  unset f
+fi
+
+xrdb .Xresources
+xset b 100 880 50
+xset r rate 300 30
+#xrandr --output DVI-D-1 --auto --output VGA-1 --auto --left-of DVI-D-1
+#xrandr --output LVDS-0 --off
+#xrandr --output DVI-D-0 --auto --output VGA-0 --auto --left-of DVI-D-0
+redshift -l 40:-88 -t 6500:3800 &
+export VDPAU_NVIDIA_NO_OVERLAY=1
+xsetroot -solid darkslategrey
+dropboxd&
+#exec awesome
+xmonad
