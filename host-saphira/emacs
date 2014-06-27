@@ -1,0 +1,562 @@
+;;;; -*- mode: emacs-lisp -*-
+;;;; bdowning's .emacs
+
+(require 'cl)
+
+(when (>= emacs-major-version 24)
+  ;; revert new terrible clipboard behavior
+  (setq-default select-active-regions nil
+                mouse-drag-copy-region t
+                x-select-enable-primary t
+                x-select-enable-clipboard nil)
+  (global-set-key [mouse-2] 'mouse-yank-at-click))
+(setq mail-host-address "lavos.net")
+
+(setq confirm-kill-emacs 'yes-or-no-p)
+(defun system-name-in (&rest names)
+  (let ((our-name (downcase (first (split-string system-name "\\.")))))
+    (member our-name names)))
+
+(defvar local-library-directory "~/lib/emacs")
+(defun libdir (more)
+  (concatenate 'string local-library-directory "/" more))
+
+;; (defvar xref-current-project nil) ;; can be also "my_project_name"
+;; (defvar xref-key-binding 'global) ;; can be also 'local or 'none
+;; (add-to-list 'load-path (libdir "xref/emacs"))
+;; (add-to-list 'exec-path (libdir "xref"))
+;; (load "xrefactory")
+
+;;; load paths
+(add-to-list 'load-path local-library-directory)
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
+
+;; Load CEDET
+;; (load-file (libdir "cedet-1.0pre3/common/cedet.el"))
+
+;; Enabling various SEMANTIC minor modes.  See semantic/INSTALL for more ideas.
+;; Select one of the following
+;; (semantic-load-enable-code-helpers)
+;; (semantic-load-enable-guady-code-helpers)
+;; (semantic-load-enable-excessive-code-helpers)
+
+;; Enable this if you develop in semantic, or develop grammars
+;; (semantic-load-enable-semantic-debugging-helpers)
+
+;; (add-to-list 'load-path (libdir "ecb-2.32"))
+;; (require 'ecb)
+
+;;; start server
+(if (system-name-in "xxsmaug")
+    (progn (require 'gnuserv)
+           (gnuserv-start))
+  (server-start))
+
+(setq using-carbon (boundp 'carbon-emacs-package-app-path))
+
+;;; some "big switch" parameters
+(setq using-erc nil)
+(when (system-name-in "xxsmaug")
+  (setq using-ispell t)
+  (setq ispell-program-name "C:/Program Files/Aspell/bin/aspell"))
+(when (system-name-in "saphira")
+  (setq using-ispell t)
+  (setq ispell-program-name "aspell")
+  (setq using-tramp (> emacs-minor-version 2))
+  (setq using-parenface t)
+  (setq using-w3m t)
+  (setq using-slime t)
+  (setq inferior-lisp-program "sbcl")
+  (prefer-coding-system 'utf-8))
+(when (system-name-in "ruth")
+  (setq using-erc t)
+  (setq using-ispell t)
+  (setq ispell-program-name "aspell")
+  (setq using-tramp (> emacs-minor-version 2))
+  (setq using-parenface t)
+  (setq using-w3m t)
+  (setq using-slime t)
+  (setq inferior-lisp-program "sbcl"))
+(when (system-name-in "sunfire")
+  (setq using-ispell t)
+  (setq using-tramp (> emacs-minor-version 2))
+  (setq using-parenface t)
+  (setq using-w3m t)
+  (setq using-slime t)
+  (setq inferior-lisp-program "lisp"))
+
+(when t
+  (setq exec-path (cons (libdir "xref") exec-path))
+  (setq load-path (cons (libdir "xref/emacs") load-path)))
+
+(scroll-bar-mode -1)
+(menu-bar-mode -1)
+(global-auto-revert-mode 1)
+(setq require-final-newline 'query)
+
+(setq special-display-buffer-names
+      '()
+      ;'("*Backtrace*" "*VC-log*" "*compilation*" "*Completions*" "*grep*")
+      )
+
+(when window-system
+  (global-unset-key "\C-z")) ; iconify-or-deiconify-frame (C-x C-z)
+
+(setq show-trailing-whitespace t)
+(setq indicate-empty-lines nil)
+
+;;; parenface
+(when using-parenface
+  (require 'parenface))
+
+;;; trampage
+(when using-tramp
+  (require 'tramp)
+  ;; (add-to-list
+  ;;  'tramp-multi-connection-function-alist
+  ;;  '("ssh876" tramp-multi-connect-rlogin "ssh %h -l %u -p 876%n"))
+  )
+
+;;; ERC
+(when using-erc
+  (add-to-list 'load-path (libdir "erc-4.0"))
+  (require 'erc)
+  (setq erc-server "us.freenode.org"
+        erc-port 6667
+        erc-nick "bdowning"
+        erc-nick-uniquifier "_"
+        erc-user-full-name "Brian Downing"
+        erc-prompt-for-password nil
+        erc-auto-query 'window)
+  (add-hook 'erc-mode-hook 'erc-add-scroll-to-bottom)
+  
+  (setq erc-timestamp-only-if-changed-flag nil
+        erc-timestamp-format "%H:%M "
+        erc-fill-prefix "        "
+        erc-fill-column 72
+        erc-insert-timestamp-function 'erc-insert-timestamp-left)
+  
+  (setq erc-hide-timestamps nil)
+
+  (erc-timestamp-mode 1)
+
+  (when using-ispell
+    (add-hook 'erc-mode-hook 'flyspell-mode)
+    (defun erc-flyspell-verify ()
+      "This function is used for `flyspell-generic-check-word-p'
+in `erc-mode'."
+      (> (point) erc-insert-marker))
+    
+    (put 'erc-mode
+         'flyspell-mode-predicate
+         'erc-flyspell-verify)))
+  
+;;; mutt files
+(defvar mutt-file-pattern "mutt-[a-z]+-[0-9]+-[0-9]+\\'"
+  "Regular expression which matches Mutt's temporary files.")
+(defun mutt-edit-message ()
+  (interactive)
+  (set-default-font "-misc-fixed-medium-r-normal--20-200-75-75-c-100-iso8859-1")
+  (message-mode)
+  (flyspell-mode)
+  (use-local-map (let ((map (make-sparse-keymap)))
+                   (set-keymap-parent map (current-local-map))
+                   map))
+  (local-set-key "\C-c\C-c" (lambda ()
+                              (interactive)
+                              (save-buffer)
+                              (server-edit))))
+(unless (assq mutt-file-pattern auto-mode-alist)
+  (setq auto-mode-alist
+       (cons (cons mutt-file-pattern 'mutt-edit-message)
+             auto-mode-alist)))
+
+;;; ediff
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq ediff-split-window-function 'split-window-horizontally)
+
+;;; w3m
+;;(when using-w3m
+;;  (add-to-list 'load-path (libdir "w3m"))
+;;  (require 'w3m)
+;;  (setq browse-url-browser-function #'w3m-browse-url))
+
+;;; attempt (ha!) to fix scrolling
+(defun scroll-line-by-line ()
+  (make-local-variable 'scroll-step)
+  (make-local-variable 'scroll-conservatively)
+  (setq scroll-up-aggressively 0.0
+        scroll-down-aggressively 0.0
+        scroll-step 1
+        scroll-conservatively 100000))
+
+(set-default 'scroll-up-aggressively 0.0)
+(set-default 'scroll-down-aggressively 0.0)
+(setq scroll-step 5
+      scroll-conservatively 0)
+
+;;; anchored transpose
+(global-set-key [?\C-x ?t] 'anchored-transpose)
+(autoload 'anchored-transpose "anchored-transpose" nil t)
+
+;;; icomplete+
+(eval-after-load "icomplete" '(progn (require 'icomplete+)))
+
+;;; global keybindings
+(global-unset-key "\C-l")
+(global-set-key "\C-l\C-l" 'recenter)
+(global-set-key "\C-x\C-b" 'ibuffer)
+
+(defun resize-rows (rows)
+  (interactive "nNew height:  ")
+  (when (> rows 10)
+    (modify-frame-parameters nil `((height . ,rows)))))
+(global-set-key "\C-l\C-r" 'resize-rows)
+(defun resize-columns (cols)
+  (interactive "nNew width:  ")
+  (when (> cols 10)
+    (modify-frame-parameters nil `((width . ,cols)))))
+(global-set-key "\C-l\C-c" 'resize-columns)
+(defun new-font (font)
+  (interactive "sNew font:  ")
+  (modify-frame-parameters nil `((font . ,font))))
+(global-set-key "\C-l\C-f" 'new-font)
+(global-set-key "\C-l\C-g" 'goto-line)
+(global-set-key "\C-l\C-s" (lambda () (interactive) (eshell t)))
+
+(global-set-key "\C-l\C-p" (lambda () (interactive) (other-window -1)))
+(global-set-key [?\C-l ?\C-,] 'other-window)
+(global-set-key "\C-l," 'other-window)
+(unless (system-name-in "sunfire")
+  (global-set-key [?\C-l ?\C-\;] 'other-frame)
+  (global-set-key "\C-l;" 'other-frame))
+
+;;; Minor modes
+(global-font-lock-mode t)
+(iswitchb-mode t)
+(column-number-mode t)
+(progn
+  (winner-mode t)
+  (global-set-key [24 left] 'winner-undo)
+  (global-set-key [24 right] 'winner-redo))
+;;(partial-completion-mode t)
+
+;; fill mode
+(setq colon-double-space t)
+
+;; Transient mark mode, but always use mark
+(transient-mark-mode t)
+(setq mark-even-if-inactive t)
+
+;;; disabled features
+(put 'narrow-to-region 'disabled nil)
+(setq enable-recursive-minibuffers t)
+
+;;; c-mode
+(setq-default c-basic-offset 4)
+(setq-default c-default-style '((java-mode . "java") (other . "K&R")))
+(setq-default c-cleanup-list '(brace-else-brace
+                               brace-elseif-brace
+                               brace-catch-brace
+                               defun-close-semi
+                               list-close-comma
+                               scope-operator))
+(defun insert-c-arrow ()
+  (interactive)
+  (insert "->"))
+(defun set-insert-c-arrow ()
+  (local-set-key '[67108910] (quote insert-c-arrow)))
+(add-hook 'c-mode-hook 'set-insert-c-arrow)
+(add-hook 'c++-mode-hook 'set-insert-c-arrow)
+
+;;; perl-mode
+(add-hook 'perl-mode-hook 'set-insert-c-arrow)
+
+;;; lisp
+;; slime
+(require 'eldoc)
+(when using-slime
+  (add-to-list 'load-path (libdir "slime"))
+  ;(add-to-list 'load-path (libdir "slime/contrib"))
+  (require 'slime)
+  (slime-setup '(slime-fancy slime-sprof))
+  ;(require 'slime-fancy)
+  ;(setf slime-net-coding-system 'utf-8-unix)
+  (load-library "cl-indent"))
+
+(modify-syntax-entry ?\[ "(]  " lisp-mode-syntax-table)
+(modify-syntax-entry ?\] ")[  " lisp-mode-syntax-table)
+
+(defun kill-sexp-up-tree (arg)
+  "Kills one sexp up the tree, replacing with the arg sexps
+   after the mark."
+  (interactive "*p")
+  (kill-sexp arg)
+  (backward-up-list)
+  (kill-sexp)
+  (yank 2)
+  (backward-sexp arg))
+(defun move-past-close-and-space ()
+  "bleh"
+  (interactive)
+  (backward-up-list)
+  (forward-sexp)
+  (insert " "))
+
+(defun custom-lisp-keybindings ()
+  (local-set-key "[" 'insert-parentheses)
+  (local-set-key "]" 'move-past-close-and-reindent)
+  (local-set-key "}" 'move-past-close-and-space)
+  (local-set-key [\C-\M-backspace] 'backward-kill-sexp)
+  (local-set-key "\C-l\C-k" 'kill-sexp-up-tree)
+  (local-set-key "\M-[" (lambda () (interactive) (insert "[")))
+  (local-set-key "\M-]" (lambda () (interactive) (insert "]"))))
+
+(defun use-indentation (indent-function)
+  (make-local-variable 'lisp-indent-function)
+  (setq lisp-indent-function indent-function))
+(defun use-elisp-indentation () (use-indentation 'lisp-indent-function))
+(defun use-cl-indentation () (use-indentation 'common-lisp-indent-function))
+(defun use-scheme-indentation () (use-indentation 'scheme-indent-function))
+
+(defun basic-cl-setup ()
+  (custom-lisp-keybindings)
+  (use-cl-indentation))
+(defun basic-elisp-setup ()
+  (custom-lisp-keybindings)
+  (use-elisp-indentation)
+  (eldoc-mode 1))
+(defun basic-scheme-setup ()
+  (custom-lisp-keybindings)
+  (use-scheme-indentation))
+
+(add-hook 'lisp-mode-hook 'basic-cl-setup)
+(add-hook 'inferior-lisp-mode-hook 'basic-cl-setup)
+(when using-slime
+  ;; (dolist (map (list slime-mode-map 
+  ;;                    slime-repl-mode-map))
+  ;;   (define-key map "\e\C-q" 'indent-sexp)
+  ;;   (define-key map "\C-c\C-i" 'slime-fuzzy-complete-symbol)
+  ;;   (define-key map "\C-l\C-q" 'slime-reindent-defun))
+  ;; (add-hook 'lisp-mode-hook (lambda () (slime-mode t)))
+  ;; (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
+  (add-hook 'slime-repl-mode-hook 'basic-cl-setup)
+  (add-hook 'slime-repl-mode-hook 'scroll-line-by-line))
+(add-hook 'emacs-lisp-mode-hook 'basic-elisp-setup)
+(add-hook 'lisp-interaction-mode-hook 'basic-elisp-setup)
+(add-hook 'ielm-mode-hook 'basic-elisp-setup)
+(add-hook 'scheme-mode-hook 'basic-scheme-setup)
+
+(setq common-lisp-hyperspec-root 
+      "file:///usr/share/doc/hyperspec/")
+
+;;; python
+;;(setq auto-mode-alist
+;;      (cons '("\\.py$" . python-mode) auto-mode-alist))
+;;(setq interpreter-mode-alist
+;;      (cons '("python" . python-mode) interpreter-mode-alist))
+;;(autoload 'python-mode "python-mode" "Python editing mode." t)
+;;(add-hook 'python-mode-hook (lambda () 
+;;                              (make-local-variable 'indent-tabs-mode)
+;;                              (setq indent-tabs-mode t)))
+
+;;; prolog
+;;(autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
+;;(autoload 'prolog-mode "prolog" "Major mode for editing Prolog programs." t)
+;;(autoload 'mercury-mode "prolog" "Major mode for editing Mercury programs." t)
+;;(setq prolog-system 'swi)
+;;(setq auto-mode-alist (append '(("\\.plg$" . prolog-mode)
+;;                                ("\\.m$" . mercury-mode))
+;;                              auto-mode-alist))
+
+;;; lua
+(setq lua-indent-level 4)
+(setq lua-electric-flag nil)
+(setq auto-mode-alist (cons '("\.lua$" . lua-mode) auto-mode-alist))
+(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+
+;;; rnc
+(autoload 'rnc-mode "rnc-mode" "Relax NG Compact schema editing mode." t)
+
+(setq auto-mode-alist
+      (cons '("\\.rnc\\'" . rnc-mode)
+            auto-mode-alist))
+
+;;; miscellaneous configuration
+;; I hate typing "yes" and "no"
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; Changes in file saving policy:
+;; * No backup files, but still use autosave.
+;; * Try hard to break hard links.
+(setq make-backup-files             nil
+      file-precious-flag            t
+      find-file-existing-other-name nil)
+
+;; Prompt before evaluating local bits of lisp.  This stops people
+;; putting things at the end of files which delete all your files!
+(setq enable-local-variables t
+      enable-local-eval      1)
+
+;;; font setup
+(if using-carbon
+    (modify-all-frames-parameters
+     '((font . "-apple-bitstream vera sans mono-medium-r-normal--12-120-75-75-m-120-mac-roman")
+       (background-color . "black")
+       (foreground-color . "white")))
+  (modify-all-frames-parameters
+   '((font . "Consolas:pixelsize=13") ;"6x13")
+     ;;(background-color . "black")
+     ;;(foreground-color . "white")
+     ))
+  )
+
+   ;;  '((font . "-apple-monaco-medium-r-normal--10-100-75-75-m-100-mac-roman")
+   ;;    (background-color . "black")
+   ;;    (foreground-color . "white"))
+   ;;  '((font . "-apple-vt100-medium-r-normal--9-90-75-75-m-90-mac-roman")
+   ;;    (background-color . "black")
+   ;;    (foreground-color . "white"))
+
+;;; mac specifics
+;; (setq browse-url-browser-function
+;;       #'(lambda (url &optional new-win)
+;;           (do-applescript 
+;;               (concat "open location \"" url "\""))))
+
+;;;; Menu bars on GUI frames, but no menu bars on TTY frames.
+;; (defun menu-bar-if-gui (frame)
+;;   (let ((mb-lines (if (frame-parameter frame 'window-system) 1 0)))
+;;     (modify-frame-parameters frame `((menu-bar-lines . ,mb-lines)))))
+;; (add-hook 'after-make-frame-functions 'menu-bar-if-gui)
+
+;; hacks
+;; (defun ease-mode (mode)
+;;   (interactive)
+;;   (funcall mode)
+;;   (setq tab-width 4)
+;;   (setq indent-tabs-mode t))
+;; (push '(".*/[Ee]ase/.*\\.p[lm]\\'" . (lambda () (ease-mode 'perl-mode)))
+;;       auto-mode-alist)
+;; (push '(".*/[Ee]ase/.*\\.[ch]p?p?\\'" . (lambda () (ease-mode 'c-mode)))
+;;       auto-mode-alist)
+
+;; (defun tce-mode (mode)
+;;   (interactive)
+;;   (funcall mode)
+;;   (setq tab-width 4))
+;; (push '(".*/TCE/.*\\.p[lm]\\'" . (lambda () (tce-mode 'perl-mode)))
+;;       auto-mode-alist)
+;; (push '(".*/TCE/.*\\.[chCH][pP]?[pP]?\\'" . (lambda () (tce-mode 'c-mode)))
+;;       auto-mode-alist)
+
+;; (defun git-c-mode ()
+;;   (interactive)
+;;   (c-mode)
+;;   (setq tab-width 8)
+;;   (setq c-basic-offset 8)
+;;   (setq indent-tabs-mode t))
+;; (push '(".*/src/git/.*\\.[ch]\\'" . git-c-mode) auto-mode-alist)
+
+(autoload 'dtrt-indent-mode "dtrt-indent"
+  "Adapt to foreign indentation offsets" t)
+(add-hook 'c-mode-common-hook '(lambda () (dtrt-indent-mode 1)))
+
+(add-to-list 'load-path (libdir "omake-mode"))
+(load-library "omake")
+
+;; Org mode
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+
+;; Coffeescript
+(add-to-list 'load-path (libdir "coffee-mode"))
+(load-library "coffee-mode")
+(setq-default coffee-tab-width 4)
+
+;; Livescript-mode
+(add-to-list 'load-path (libdir "livescript-mode"))
+(load-library "livescript-mode")
+
+(load-theme 'zenburn t)
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(blink-cursor-mode nil nil (frame))
+ '(blink-matching-paren-on-screen nil)
+ '(c-basic-offset 4 t)
+ '(c-default-style (quote ((java-mode . "K&R") (other . "K&R"))) t)
+ '(case-fold-search t)
+ '(cperl-indent-level 4)
+ '(current-language-environment "English")
+ '(custom-safe-themes (quote ("bf9d5728e674bde6a112979bd830cc90327850aaaf2e6f3cc4654f077146b406" default)))
+ '(dns-mode-soa-auto-increment-serial nil)
+ '(ecb-layout-window-sizes (quote (("left8" (0.3333333333333333 . 0.29577464788732394) (0.3333333333333333 . 0.23943661971830985) (0.3333333333333333 . 0.28169014084507044) (0.3333333333333333 . 0.16901408450704225)))))
+ '(glasses-face nil)
+ '(glasses-original-separator "")
+ '(glasses-separate-parentheses-p nil)
+ '(glasses-separator "-")
+ '(glasses-uncapitalize-p t)
+ '(global-font-lock-mode t nil (font-lock))
+ '(indent-tabs-mode nil)
+ '(inferior-lisp-buffer nil t)
+ '(inferior-lisp-load-command "(load \"%s\")
+;; ")
+ '(inhibit-startup-buffer-menu t)
+ '(inhibit-startup-screen t)
+ '(iswitchb-buffer-ignore (quote ("^ " "^\\*tramp")))
+ '(iswitchb-default-method (quote samewindow))
+ '(iswitchb-max-to-show 10)
+ '(js2-auto-indent-flag nil)
+ '(js2-bounce-indent-flag nil)
+ '(js2-enter-indents-newline nil)
+ '(js2-mirror-mode nil)
+ '(js2-rebind-eol-bol-keys nil)
+ '(line-move-visual nil)
+ '(lisp-indent-maximum-backtracking 5)
+ '(lisp-loop-forms-indentation 6)
+ '(lisp-loop-keyword-indentation 6)
+ '(lisp-prefix-match-indentation t)
+ '(make-backup-files nil)
+ '(mouse-1-click-follows-link nil)
+ '(mouse-wheel-follow-mouse t)
+ '(mouse-wheel-mode t nil (mwheel))
+ '(mouse-wheel-progressive-speed nil)
+ '(nxml-sexp-element-flag t)
+ '(org-agenda-files (quote ("~/Documents/org/pomodoro.org" "~/projects/somat/docs/ng/planning-bs.org")))
+ '(pascal-indent-level 2)
+ '(prolog-program-name (quote (((getenv "EPROLOG") (eval (getenv "EPROLOG"))) (eclipse "eclipse") (mercury nil) (sicstus "sicstus") (swi "prolog") (gnu "gprolog") (t "prolog"))))
+ '(rmail-summary-scroll-between-messages t)
+ '(scroll-preserve-screen-position nil)
+ '(scroll-step 5)
+ '(show-paren-delay 0)
+ '(show-paren-mode t)
+ '(slime-conservative-indentation nil)
+ '(tool-bar-mode nil nil (tool-bar))
+ '(transient-mark-mode t)
+ '(truncate-partial-width-windows nil)
+ '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
+ '(vc-follow-symlinks t)
+ '(vc-handled-backends (quote (RCS CVS SVN SCCS Bzr Hg Arch)))
+ '(w3m-key-binding (quote info)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(cursor ((t (:background "green"))))
+ '(erc-nick-default-face ((t (:foreground "cyan" :weight bold))) t)
+ '(font-lock-warning-face ((((class color) (background dark)) (:foreground "Red"))))
+ '(message-cited-text-face ((((class color) (background dark)) (:foreground "green"))) t)
+ '(paren-face ((((class color)) (:foreground "gray51"))))
+ '(show-paren-match ((((class color)) (:background "darkgreen" :foreground "green"))))
+ '(tex-verbatim ((t nil)) t))
+
+;; (desktop-load-default)
+;; (desktop-read)
