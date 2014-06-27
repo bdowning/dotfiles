@@ -24,7 +24,7 @@
 (setq ispell-program-name "aspell")
 (setq using-tramp t)
 (setq using-parenface t)
-(setq using-slime t)
+(setq using-slime nil)
 (setq inferior-lisp-program "sbcl")
 
 (scroll-bar-mode -1)
@@ -275,8 +275,8 @@
 (global-set-key "\C-ca" 'org-agenda)
 
 ;; Livescript-mode
-(add-to-list 'load-path (libdir "livescript-mode"))
-(load-library "livescript-mode")
+;(add-to-list 'load-path (libdir "livescript-mode"))
+;(load-library "livescript-mode")
 
 (load-theme 'zenburn t)
 
