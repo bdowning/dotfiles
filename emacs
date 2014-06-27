@@ -5,7 +5,7 @@
 
 (setq confirm-kill-emacs 'yes-or-no-p)
 
-(defvar local-library-directory "~/lib/emacs")
+(defvar local-library-directory "~/.emacs.d/lib")
 (defun libdir (more)
   (concatenate 'string local-library-directory "/" more))
 
