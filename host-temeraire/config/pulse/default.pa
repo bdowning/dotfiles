@@ -1,0 +1,8 @@
+.include /etc/pulse/default.pa
+
+.nofail
+
+load-sample-lazy x11-bell /usr/share/sounds/freedesktop/stereo/dialog-warning.oga
+load-module module-x11-bell sample=x11-bell
+
+.fail
