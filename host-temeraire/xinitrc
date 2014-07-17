@@ -14,7 +14,8 @@ xset r rate 300 30
 #xrandr --output DVI-D-0 --auto --output VGA-0 --auto --left-of DVI-D-0
 redshift -l 40:-88 -t 6500:3800 &
 export VDPAU_NVIDIA_NO_OVERLAY=1
-xsetroot -solid darkslategrey
+#compton --backend glx --glx-no-stencil --glx-no-rebind-pixmap --vsync=opengl-swc --paint-on-overlay --glx-swap-method=2 &
+hsetroot -solid '#2f4f4f'
 dropboxd&
 start-pulseaudio-x11
 xset b 100
