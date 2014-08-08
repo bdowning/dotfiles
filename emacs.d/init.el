@@ -76,9 +76,8 @@
   (menu-bar-mode -1))
 
 ;; choose your own fonts, in a system dependant way
-(if (string-match "apple-darwin" system-configuration)
-    (set-face-font 'default "Monaco-13")
-  (set-face-font 'default "Consolas:pixelsize=13"))
+(modify-all-frames-parameters
+ '((font . "Consolas:pixelsize=13")))
 
 (global-hl-line-mode)
 
@@ -173,7 +172,7 @@
 (setq mark-even-if-inactive t)
 
 ;; NO TABS
-(setq indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil)
 
 ;; Disabled features
 (put 'narrow-to-region 'disabled nil)
