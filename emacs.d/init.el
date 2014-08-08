@@ -54,19 +54,6 @@
    switch-window                        ; takes over C-x o
    ))
 
-;;
-;; Some recipes require extra tools to be installed
-;;
-;; Note: el-get-install requires git, so we know we have at least that.
-;;
-(when (ignore-errors (el-get-executable-find "cvs"))
-  (add-to-list 'bd/el-get-packages 'emacs-goodies-el)) ; the debian addons for emacs
-
-(when (ignore-errors (el-get-executable-find "svn"))
-  (loop for p in '(psvn                 ; M-x svn-status
-                   )
-        do (add-to-list 'bd/el-get-packages p)))
-
 (setq bd/el-get-packages
       (append
        bd/el-get-packages
