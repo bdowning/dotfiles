@@ -1,0 +1,4 @@
+(:name column-enforce-mode
+       :description "A minor-mode to highlight overly-long lines"
+       :type github
+       :pkgname "jordonbiondo/column-enforce-mode")
