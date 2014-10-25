@@ -2,6 +2,7 @@ import XMonad
 import XMonad.Actions.CycleWS
 import XMonad.Actions.UpdatePointer
 import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.InsertPosition
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
@@ -30,9 +31,11 @@ layout = avoidStruts (tiled ||| three ||| Mirror tiled ||| Full)
      nmaster = 1
      delta   = 3/100
 
+myEwmh x = x
+
 main = do
   -- dzenproc <- spawnPipe "dzen2 -fn 'DejaVu Sans Mono:pixelsize=12' -ta l -e 'onstart=lower'"
-  xmonad $ defaultConfig {
+  xmonad $ myEwmh defaultConfig {
     terminal = "xterm",
     manageHook = manageDocks <+> myManageHook <+> manageHook defaultConfig,
     -- <+> insertPosition Master Newer 

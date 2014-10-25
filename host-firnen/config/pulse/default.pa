@@ -6,3 +6,6 @@ load-sample-lazy x11-bell /usr/share/sounds/freedesktop/stereo/dialog-warning.og
 load-module module-x11-bell sample=x11-bell
 
 .fail
+
+# automatically switch to newly-connected devices
+#load-module module-switch-on-connect
