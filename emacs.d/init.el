@@ -49,6 +49,7 @@
    column-enforce-mode
    dtrt-indent
    lua-mode
+   omake-mode
    paredit
    parenface
    switch-window                        ; takes over C-x o

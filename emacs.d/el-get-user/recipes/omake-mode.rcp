@@ -1,0 +1,4 @@
+(:name omake-mode
+       :description "Major mode for OMake files"
+       :type hg
+       :url "https://bitbucket.org/camlspotter/omake-mode")
