@@ -262,3 +262,7 @@
 (setq make-backup-files             nil
       file-precious-flag            t
       find-file-existing-other-name nil)
+
+(load "~/.emacs.d/org.el")
+(when (locate-library "mu4e")
+  (load "~/.emacs.d/mu4e.el"))
