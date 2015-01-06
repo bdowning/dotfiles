@@ -93,6 +93,8 @@
 
 (iswitchb-mode 1)
 
+(electric-indent-mode -1)
+
 (add-hook 'prog-mode-hook 'column-enforce-mode)
 
 ;; under mac, have Command as Meta and keep Option for localized input
