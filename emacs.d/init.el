@@ -53,6 +53,7 @@
    paredit
    parenface
    switch-window                        ; takes over C-x o
+   js2-mode
    ))
 
 (setq bd/el-get-packages
@@ -262,6 +263,16 @@
 (setq make-backup-files             nil
       file-precious-flag            t
       find-file-existing-other-name nil)
+
+(add-to-list 'dtrt-indent-language-syntax-table
+             '(omake
+               ("\\$\""                 0   "\""       nil "\\.")
+               ("\""                    0   "\""       nil "\\.")
+               ("'"                     0   "'"        nil "\\.")
+               ("#"                     0   "$"        nil)
+               ("\\$("                  0   ")"        t)))
+(add-to-list 'dtrt-indent-hook-mapping-list
+             '(omake-mode omake omake-indent-offset))
 
 (load "~/.emacs.d/org.el")
 (when (locate-library "mu4e")

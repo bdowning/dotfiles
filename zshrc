@@ -104,3 +104,5 @@ log
 export CVS_RSH=ssh
 
 #function dmalloc { eval `command dmalloc -b $*`; }
+
+alias xo=xdg-open

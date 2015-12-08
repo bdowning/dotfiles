@@ -31,7 +31,7 @@ layout = avoidStruts (tiled ||| three ||| Mirror tiled ||| Full)
      nmaster = 1
      delta   = 3/100
 
-myEwmh x = x
+myEwmh x = ewmh x
 
 main = do
   -- dzenproc <- spawnPipe "dzen2 -fn 'DejaVu Sans Mono:pixelsize=12' -ta l -e 'onstart=lower'"
@@ -53,8 +53,9 @@ main = do
     focusedBorderColor = "#6F6F6F",
     keys = myKeys <+> keys defaultConfig,
     modMask = mod4Mask,
-    handleEventHook = docksEventHook,
-    startupHook = setDefaultCursor xC_left_ptr
+    handleEventHook = fullscreenEventHook <+> docksEventHook,
+    startupHook = do
+      setDefaultCursor xC_left_ptr
     }
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList [
@@ -62,7 +63,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList [
   ((modm, xK_r     ), shellPrompt  defaultXPConfig),
   ((modm, xK_z     ), sendMessage ToggleStruts),
   ((modm, xK_Escape), toggleWS),
+  ((modm .|. controlMask .|. shiftMask, xK_l), spawn "xset s activate"),
   ((0, xF86XK_AudioMute), spawn "amixer -q set Master toggle"),
   ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q set Master 5%+ unmute"),
-  ((0, xF86XK_AudioLowerVolume), spawn "amixer -q set Master 5%- unmute")
+  ((0, xF86XK_AudioLowerVolume), spawn "amixer -q set Master 5%- unmute"),
+  ((0, xF86XK_MonBrightnessUp), spawn "xbacklight -inc 1 -time 0"),
+  ((0, xF86XK_MonBrightnessDown), spawn "xbacklight -dec 1 -time 0")
   ]

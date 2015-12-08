@@ -8,13 +8,16 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
 fi
 
 xrdb .Xresources
+xset dpms 630 630 630
+xset s 600 20
+xss-lock -n "$HOME/bin/dim-screen.sh" -- /bin/sh -c 'keepass --lock-all&slock' &
 xset r rate 300 30
 xinput set-prop "SynPS/2 Synaptics TouchPad" "Synaptics Finger" 40 50 0
 xinput set-prop "SynPS/2 Synaptics TouchPad" "Synaptics Noise Cancellation" 32 32
-compton --backend glx --glx-no-stencil --vsync opengl-swc -b
-redshift -l 40:-88 -t 6500:3800 &
+#compton --backend glx --glx-no-stencil --vsync opengl-swc -b
+redshift -l 40:-88 -t 6500:3000 &
 hsetroot -solid '#2f4f4f'
-dropboxd&
+dropbox&
 start-pulseaudio-x11
 xset b 100
 xmonad
