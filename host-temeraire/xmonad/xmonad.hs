@@ -12,6 +12,7 @@ import XMonad.Util.Run(spawnPipe)
 import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Prompt.XMonad
+import XMonad.Hooks.EwmhDesktops
 import Graphics.X11.ExtraTypes.XF86
 import System.IO
 import qualified Data.Map as M
@@ -19,11 +20,13 @@ import qualified Data.Map as M
 myManageHook = composeAll 
   [ className =? "Squeak" --> doFloat
   , className =? "Plugin-container" --> doFloat
+  , className =? "streaming_client" --> doIgnore
+  , title =? "TIS-100" --> doIgnore
   , isDialog --> doCenterFloat
   , isFullscreen --> doFullFloat
   ]
 
-layout = tiled ||| three ||| Full
+layout = tiled ||| three ||| noBorders Full
   where
      tiled   = Tall nmaster delta (1/2)
      three   = ThreeCol nmaster delta (1/3)
@@ -32,7 +35,7 @@ layout = tiled ||| three ||| Full
 
 main = do
   --xmproc <- spawnPipe "xmobar"
-  xmonad $ defaultConfig {
+  xmonad $ ewmh defaultConfig {
     terminal = "xterm",
     manageHook = myManageHook <+> manageHook defaultConfig <+> manageDocks,
     -- <+> insertPosition Master Newer 
