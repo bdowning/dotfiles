@@ -1,0 +1,4 @@
+(:name mu4e-multi
+       :description "Multiple accounts support for mu4e"
+       :type github
+       :pkgname "fgallina/mu4e-multi")

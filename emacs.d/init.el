@@ -48,6 +48,7 @@
    color-theme-zenburn
    column-enforce-mode
    dtrt-indent
+   js2-mode
    lua-mode
    omake-mode
    paredit
@@ -117,6 +118,10 @@
 ;; was no unsaved changes in the corresponding buffer, just revert its
 ;; content to reflect what's on-disk.
 (global-auto-revert-mode 1)
+
+;; (setq visible-cursor nil
+;;       blink-cursor-mode nil)
+(blink-cursor-mode 0)
 
 ;; M-x shell is a nice shell interface to use, let's make it colorful.  If
 ;; you need a terminal emulator rather than just a shell, consider M-x term

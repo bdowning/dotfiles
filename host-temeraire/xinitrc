@@ -13,6 +13,10 @@ xinput set-prop 'Logitech Unifying Device. Wireless PID:101b' 'Device Accel Prof
 xinput set-prop 'Logitech Unifying Device. Wireless PID:101b' 'Device Accel Constant Deceleration' 2
 xinput set-prop 'Logitech Unifying Device. Wireless PID:101b' 'Device Accel Adaptive Deceleration' 2
 xinput set-prop 'Logitech Unifying Device. Wireless PID:101b' 'Device Accel Velocity Scaling' 2
+xinput set-prop 'Logitech M705' 'Device Accel Profile' 2
+xinput set-prop 'Logitech M705' 'Device Accel Constant Deceleration' 2
+xinput set-prop 'Logitech M705' 'Device Accel Adaptive Deceleration' 2
+xinput set-prop 'Logitech M705' 'Device Accel Velocity Scaling' 2
 #xrandr --output DVI-D-1 --auto --output VGA-1 --auto --left-of DVI-D-1
 #xrandr --output LVDS-0 --off
 #xrandr --output DVI-D-0 --auto --output VGA-0 --auto --left-of DVI-D-0
@@ -20,7 +24,7 @@ redshift -l 40:-88 -t 6500:3800 &
 export VDPAU_NVIDIA_NO_OVERLAY=1
 #compton --backend glx --glx-no-stencil --glx-no-rebind-pixmap --vsync=opengl-swc --paint-on-overlay --glx-swap-method=2 &
 hsetroot -solid '#2f4f4f'
-dropboxd&
+dropbox&
 start-pulseaudio-x11
 xset b 100
 xmonad
