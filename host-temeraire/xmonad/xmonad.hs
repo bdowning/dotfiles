@@ -20,7 +20,6 @@ import qualified Data.Map as M
 myManageHook = composeAll 
   [ className =? "Squeak" --> doFloat
   , className =? "Plugin-container" --> doFloat
-  , className =? "streaming_client" --> doIgnore
   , title =? "TIS-100" --> doIgnore
   , isDialog --> doCenterFloat
   , isFullscreen --> doFullFloat
@@ -44,12 +43,13 @@ main = do
     --  ppOutput = hPutStrLn xmproc,
     --  ppTitle = xmobarColor "green" ""
     --  } <+> updatePointer (TowardsCentre 0.025 0.025),
-    logHook = updatePointer (TowardsCentre 0.025 0.025),
+    --logHook = updatePointer (TowardsCentre 0.025 0.025),
     borderWidth        = 2,
     normalBorderColor  = "#383838",
     focusedBorderColor = "#6F6F6F",
     keys = myKeys <+> keys defaultConfig,
     modMask = mod4Mask,
+    handleEventHook = fullscreenEventHook <+> docksEventHook,
     startupHook = setDefaultCursor xC_left_ptr
     }
 

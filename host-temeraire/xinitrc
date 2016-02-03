@@ -9,6 +9,7 @@ fi
 
 xrdb .Xresources
 xset r rate 300 30
+xautolock -time 15 -locker 'keepass --lock-all' &
 xinput set-prop 'Logitech Unifying Device. Wireless PID:101b' 'Device Accel Profile' 2
 xinput set-prop 'Logitech Unifying Device. Wireless PID:101b' 'Device Accel Constant Deceleration' 2
 xinput set-prop 'Logitech Unifying Device. Wireless PID:101b' 'Device Accel Adaptive Deceleration' 2
