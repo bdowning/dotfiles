@@ -12,7 +12,7 @@ import XMonad.Util.Run(spawnPipe)
 import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Prompt.XMonad
-import XMonad.Hooks.EwmhDesktops
+import MyEwmhDesktops
 import Graphics.X11.ExtraTypes.XF86
 import System.IO
 import qualified Data.Map as M
