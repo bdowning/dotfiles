@@ -1,80 +1,36 @@
 ;; .emacs.d/init.el
-;;
-;; Parts from emacs-kicker (Dimitri Fontaine <dim@tapoueh.org>)
-;; Licence: WTFPL, grab your copy here: http://sam.zoy.org/wtfpl/
 
-(require 'cl)                           ; common lisp goodies, loop
+(require 'cl)
+
+(require 'package)
+(defun package--save-selected-packages (&optional value)
+  "Set and (don't!) save `package-selected-packages' to VALUE."
+  (when value
+    (setq package-selected-packages value)))
+(setq
+ package-enable-at-startup nil
+ package-archives '(("melpa" . "https://melpa.org/packages/")
+                    ("gnu" . "https://elpa.gnu.org/packages/")))
+(package-initialize)
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
-(unless (require 'el-get nil t)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://github.com/dimitri/el-get/raw/master/el-get-install.el")
-    (end-of-buffer)
-    (eval-print-last-sexp)))
-(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
-
-;; now either el-get is `require'd already, or have been `load'ed by the
-;; el-get installer.
-
-;; set local recipes
-(setq
- el-get-sources
- '((:name buffer-move                   ; have to add your own keys
-          :after (progn
-                   (global-set-key (kbd "<C-S-up>")     'buf-move-up)
-                   (global-set-key (kbd "<C-S-down>")   'buf-move-down)
-                   (global-set-key (kbd "<C-S-left>")   'buf-move-left)
-                   (global-set-key (kbd "<C-S-right>")  'buf-move-right)))
-
-   (:name magit                         ; git meet emacs, and a binding
-          :after (progn
-                   (global-set-key (kbd "C-x C-z") 'magit-status)))
-
-   (:name goto-last-change              ; move pointer back to last change
-          :after (progn
-                   ;; when using AZERTY keyboard, consider C-x C-_
-                   (global-set-key (kbd "C-x C-/") 'goto-last-change)))))
-
-;; now set our own packages
-(setq
- bd/el-get-packages
- '(el-get                               ; el-get is self-hosting
-   color-theme                          ; nice looking emacs
-   color-theme-zenburn
-   column-enforce-mode
-   dtrt-indent
-   js2-mode
-   lua-mode
-   omake-mode
-   paredit
-   parenface
-   switch-window                        ; takes over C-x o
-   ))
-
-(setq bd/el-get-packages
-      (append
-       bd/el-get-packages
-       (loop for src in el-get-sources collect (el-get-source-name src))))
-
-;; install new packages and init already installed packages
-(el-get 'sync bd/el-get-packages)
-(el-get-cleanup bd/el-get-packages)
+(require 'use-package)
+(setq use-package-always-ensure t)
 
 ;; on to the visual settings
 (setq inhibit-splash-screen t)
 (line-number-mode 1)
 (column-number-mode 1)
-(load-theme 'zenburn t)
-
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (unless (string-match "apple-darwin" system-configuration)
-  ;; on mac, there's always a menu bar drown, don't have it empty
+  ;; on mac, there's always a menu bar, don't have it empty
   (menu-bar-mode -1))
 
 ;; choose your own fonts, in a system dependant way
@@ -92,17 +48,7 @@
 (setq show-paren-delay 0
       blink-matching-paren-on-screen nil)
 
-(iswitchb-mode 1)
-
 (electric-indent-mode -1)
-
-(add-hook 'prog-mode-hook 'column-enforce-mode)
-
-;; under mac, have Command as Meta and keep Option for localized input
-(when (string-match "apple-darwin" system-configuration)
-  (setq mac-allow-anti-aliasing t)
-  (setq mac-command-modifier 'meta)
-  (setq mac-option-modifier 'none))
 
 ;; Use the clipboard, pretty please, so that copy/paste "works"
 (setq x-select-enable-clipboard t)
@@ -111,7 +57,7 @@
 (windmove-default-keybindings 'meta)
 (setq windmove-wrap-around t)
 
-; winner-mode provides C-<left> to get back to previous window layout
+;; winner-mode provides C-<left> to get back to previous window layout
 (winner-mode 1)
 
 ;; whenever an external process changes a file underneath emacs, and there
@@ -185,6 +131,21 @@
 ;; Disabled features
 (put 'narrow-to-region 'disabled nil)
 
+;; Changes in file saving policy:
+;; * No backup files, but still use autosave.
+;; * Try hard to break hard links.
+(setq make-backup-files             nil
+      file-precious-flag            t
+      find-file-existing-other-name nil)
+
+;;; miscellaneous configuration
+;; I hate typing "yes" and "no"
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; make C-z not try to iconify
+(defun iconify-or-deiconify-frame ()
+  (interactive))
+
 ;;; C mode
 (setq-default c-basic-offset 4)
 (setq-default c-default-style '((java-mode . "java") (other . "K&R")))
@@ -206,29 +167,29 @@
 (add-hook 'perl-mode-hook 'bd/set-insert-c-arrow)
 
 ;;; lisp
-(require 'eldoc)
-(require 'paredit)
-(require 'parenface)
+(use-package paredit :config
+  ;; (define-key paredit-mode-map (kbd "[") 'paredit-open-round)
+  ;; (define-key paredit-mode-map (kbd "]") 'paredit-close-round-and-newline)
+  ;; (define-key paredit-mode-map (kbd "}") 'paredit-close-round)
+  ;; (define-key paredit-mode-map (kbd "M-}") (lambda () (interactive) (insert "}")))
+  ;; (define-key paredit-mode-map (kbd "M-[") 'paredit-wrap-round)
+  ;; (define-key paredit-mode-map (kbd "(") 'paredit-open-square)
+  ;; (define-key paredit-mode-map (kbd ")") 'paredit-close-square)
+  ;; (define-key paredit-mode-map (kbd "C-M-<backspace>") 'bd/paredit-kill-backwards)
+  )
 
-(define-key paredit-mode-map (kbd "[") 'paredit-open-round)
-(define-key paredit-mode-map (kbd "]") 'paredit-close-round-and-newline)
-(define-key paredit-mode-map (kbd "}") 'paredit-close-round)
-(define-key paredit-mode-map (kbd "M-}") (lambda () (interactive) (insert "}")))
-(define-key paredit-mode-map (kbd "M-[") 'paredit-wrap-round)
-(define-key paredit-mode-map (kbd "(") 'paredit-open-square)
-(define-key paredit-mode-map (kbd ")") 'paredit-close-square)
-(define-key paredit-mode-map (kbd "C-M-<backspace>") 'bd/paredit-kill-backwards)
-(defun bd/paredit-kill-backwards ()
-  (interactive)
-  (paredit-backward)
-  (paredit-kill)
-  (if (looking-at "\\\n")
-      (paredit-kill)))
+;; (defun bd/paredit-kill-backwards ()
+;;   (interactive)
+;;   (paredit-backward)
+;;   (paredit-kill)
+;;   (if (looking-at "\\\n")
+;;       (paredit-kill)))
 
 (defun bd/use-lisp-indentation (indent-function)
   (make-local-variable 'lisp-indent-function)
   (setq lisp-indent-function indent-function))
 (defun bd/basic-lisp-setup ()
+  (paren-face-mode)
   (enable-paredit-mode))
 (defun bd/basic-cl-setup ()
   (bd/basic-lisp-setup)
@@ -249,35 +210,169 @@
 (add-hook 'scheme-mode-hook 'bd/basic-scheme-setup)
 
 ;;; lua
-(setq lua-indent-level 4)
-(setq lua-electric-flag nil)
-(setq auto-mode-alist (cons '("\.lua$" . lua-mode) auto-mode-alist))
+(use-package lua-mode :config
+  (setq lua-indent-level 4)
+  (setq lua-electric-flag nil)
+  (setq auto-mode-alist (cons '("\.lua$" . lua-mode) auto-mode-alist)))
 
 ;;; omake
-(add-to-list 'load-path "~/.emacs.d/lib/omake-mode")
-(require 'omake)
+;; (add-to-list 'load-path "~/.emacs.d/lib/omake-mode")
+;; (require 'omake)
 
-;;; miscellaneous configuration
-;; I hate typing "yes" and "no"
-(fset 'yes-or-no-p 'y-or-n-p)
+;; (add-to-list 'dtrt-indent-language-syntax-table
+;;              '(omake
+;;                ("\\$\""                 0   "\""       nil "\\.")
+;;                ("\""                    0   "\""       nil "\\.")
+;;                ("'"                     0   "'"        nil "\\.")
+;;                ("#"                     0   "$"        nil)
+;;                ("\\$("                  0   ")"        t)))
+;; (add-to-list 'dtrt-indent-hook-mapping-list
+;;              '(omake-mode omake omake-indent-offset))
 
-;; Changes in file saving policy:
-;; * No backup files, but still use autosave.
-;; * Try hard to break hard links.
-(setq make-backup-files             nil
-      file-precious-flag            t
-      find-file-existing-other-name nil)
+(use-package zenburn-theme)
+(use-package dtrt-indent :config
+  (dtrt-indent-mode 1))
+(use-package paren-face)
 
-(add-to-list 'dtrt-indent-language-syntax-table
-             '(omake
-               ("\\$\""                 0   "\""       nil "\\.")
-               ("\""                    0   "\""       nil "\\.")
-               ("'"                     0   "'"        nil "\\.")
-               ("#"                     0   "$"        nil)
-               ("\\$("                  0   ")"        t)))
-(add-to-list 'dtrt-indent-hook-mapping-list
-             '(omake-mode omake omake-indent-offset))
+(use-package company :config
+  (company-mode 1))
+(use-package tide :config
+  (defun setup-tide-mode ()
+    (interactive)
+    (tide-setup)
+    (flycheck-mode +1)
+    (eldoc-mode +1)
+    (tide-hl-identifier-mode +1)
+    ;; company is an optional dependency. You have to
+    ;; install it separately via package-install
+    ;; `M-x package-install [ret] company`
+    (company-mode +1))
+  (add-hook 'typescript-mode-hook #'setup-tide-mode))
+(use-package web-mode :config
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+  (defun bd/tsx-setup-tide-mode ()
+    (when (string-equal "tsx" (file-name-extension buffer-file-name))
+      (setup-tide-mode)))
+  (add-hook 'web-mode-hook #'bd/tsx-setup-tide-mode)
+  (flycheck-add-mode 'typescript-tslint 'web-mode))
 
-(load "~/.emacs.d/org.el")
-(when (locate-library "mu4e")
-  (load "~/.emacs.d/mu4e.el"))
+(use-package column-enforce-mode :config
+  (add-hook 'prog-mode-hook 'column-enforce-mode))
+
+(use-package magit)
+
+(use-package flx)
+(use-package smex)
+(use-package wgrep)
+(use-package ivy :config
+  (setq ivy-use-virtual-buffers t
+        ivy-count-format "%d/%d "
+        ivy-re-builders-alist
+        '((swiper . ivy--regex)
+          (t . ivy--regex-fuzzy))
+        ivy-magic-tilde nil)
+  (ivy-mode 1))
+(use-package counsel :config
+  (counsel-mode 1)
+  :bind (:map ivy-minibuffer-map
+              ("M-y" . ivy-next-line)))
+(use-package swiper
+    :bind (("C-s" . swiper)))
+(use-package ivy-hydra)
+
+(use-package undo-tree)
+
+(use-package projectile :config
+  (projectile-mode 1))
+(use-package counsel-projectile :config
+  (counsel-projectile-mode 1))
+
+;; (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+
+;; (unless (require 'el-get nil t)
+;;   (with-current-buffer
+;;       (url-retrieve-synchronously
+;;        "https://github.com/dimitri/el-get/raw/master/el-get-install.el")
+;;     (end-of-buffer)
+;;     (eval-print-last-sexp)
+;;     (el-get-elpa-build-local-recipes)))
+;; (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
+
+;; ;; now either el-get is `require'd already, or have been `load'ed by the
+;; ;; el-get installer.
+
+;; ;; set local recipes
+;; (setq
+;;  el-get-sources
+;;  `(
+;;    ;; (:name buffer-move                   ; have to add your own keys
+;;    ;;  :after (progn
+;;    ;;           (global-set-key (kbd "<C-S-up>")     'buf-move-up)
+;;    ;;           (global-set-key (kbd "<C-S-down>")   'buf-move-down)
+;;    ;;           (global-set-key (kbd "<C-S-left>")   'buf-move-left)
+;;    ;;           (global-set-key (kbd "<C-S-right>")  'buf-move-right)))
+
+;;    (:name company)
+
+;;    (:name tide
+;;           :depends (,@(getf (el-get-package-def 'tide) :depends) s)
+;;           :after (progn
+;;                    ))
+
+;;    (:name magit                       ; git meet emacs, and a binding
+;;           :after (progn
+;;                    (global-set-key (kbd "C-x C-z") 'magit-status)))
+
+;;    ;; (:name goto-last-change              ; move pointer back to last change
+;;    ;;  :after (progn
+;;    ;;           ;; when using AZERTY keyboard, consider C-x C-_
+;;    ;;                 (global-set-key (kbd "C-x C-/") 'goto-last-change)))
+
+;;    (:name package
+;;           :post-init nil))
+;;  )
+
+;; ;; now set our own packages
+;; (setq
+;;  bd/el-get-packages
+;;  '(el-get                              ; el-get is self-hosting
+;;    color-theme                         ; nice looking emacs
+;;    color-theme-zenburn
+;;    column-enforce-mode
+;;    dtrt-indent
+;;    js2-mode
+;;    lua-mode
+;;                                         ;omake-mode
+;;    paredit
+;;                                         ;parenface
+;;    switch-window                       ; takes over C-x o
+
+;;    tide
+;;    flx
+;;    ivy
+;;    swiper
+;;    ))
+
+;; (setq bd/el-get-packages
+;;       (append
+;;        bd/el-get-packages
+;;        (loop for src in el-get-sources collect (el-get-source-name src))))
+
+;; ;; install new packages and init already installed packages
+;; (el-get 'sync bd/el-get-packages)
+;; (el-get-cleanup bd/el-get-packages)
+
+;; ;; under mac, have Command as Meta and keep Option for localized input
+;; (when (string-match "apple-darwin" system-configuration)
+;;   (setq mac-allow-anti-aliasing t)
+;;   (setq mac-command-modifier 'meta)
+;;   (setq mac-option-modifier 'none))
+
+
+;; ;; make C-z not try to iconify
+;; (defun iconify-or-deiconify-frame ()
+;;   (interactive))
+
+;; (load "~/.emacs.d/org.el")
+;; (when (locate-library "mu4e")
+;;   (load "~/.emacs.d/mu4e.el"))
