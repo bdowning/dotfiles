@@ -20,4 +20,5 @@ hsetroot -solid '#2f4f4f'
 dropbox&
 start-pulseaudio-x11
 xset b 100
+rm -f $HOME/.xmonad/xmonad.state
 xmonad

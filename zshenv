@@ -5,4 +5,5 @@ if [[ -z "$BASE_PATH" ]]; then
     export VISUAL=vi
     export LC_COLLATE=C
     export LESS=FRX
+    export QUOTING_STYLE=literal
 fi

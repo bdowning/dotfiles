@@ -2,7 +2,8 @@ import XMonad
 import XMonad.Actions.CycleWS
 import XMonad.Actions.UpdatePointer
 import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.EwmhDesktops
+-- import XMonad.Hooks.EwmhDesktops
+import MyEwmhDesktops
 import XMonad.Hooks.InsertPosition
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
@@ -20,6 +21,8 @@ import qualified Data.Map as M
 myManageHook = composeAll 
   [ className =? "Squeak" --> doFloat
   , className =? "Plugin-container" --> doFloat
+  , title =? "Saleae Logic Software" --> doFloat
+  , title =? "Logic" --> doIgnore
   , isDialog --> doCenterFloat
   , isFullscreen --> doFullFloat
   ]
@@ -44,10 +47,10 @@ main = do
     --  ppOutput = hPutStrLn xmproc,
     --  ppTitle = xmobarColor "green" ""
     --  } <+> updatePointer (TowardsCentre 0.025 0.025),
-    logHook = -- dynamicLogWithPP dzenPP {
+    --logHook = -- dynamicLogWithPP dzenPP {
     --   ppOutput = hPutStrLn dzenproc
     -- } <+>
-              updatePointer (TowardsCentre 0.025 0.025),
+    --          updatePointer (TowardsCentre 0.025 0.025),
     borderWidth        = 2,
     normalBorderColor  = "#383838",
     focusedBorderColor = "#6F6F6F",
@@ -67,6 +70,6 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList [
   ((0, xF86XK_AudioMute), spawn "amixer -q set Master toggle"),
   ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q set Master 5%+ unmute"),
   ((0, xF86XK_AudioLowerVolume), spawn "amixer -q set Master 5%- unmute"),
-  ((0, xF86XK_MonBrightnessUp), spawn "xbacklight -inc 1 -time 0"),
-  ((0, xF86XK_MonBrightnessDown), spawn "xbacklight -dec 1 -time 0")
+  ((0, xF86XK_MonBrightnessUp), spawn "$HOME/bin/backlight-adjust 2"),
+  ((0, xF86XK_MonBrightnessDown), spawn "$HOME/bin/backlight-adjust -2")
   ]
