@@ -35,7 +35,7 @@
 
 ;; choose your own fonts, in a system dependant way
 (modify-all-frames-parameters
- '((font . "Consolas:pixelsize=13")))
+ '((font . "Consolas 10")))
 
 (global-hl-line-mode)
 
@@ -141,6 +141,11 @@
 ;;; miscellaneous configuration
 ;; I hate typing "yes" and "no"
 (fset 'yes-or-no-p 'y-or-n-p)
+
+;; ;; under mac, have Command as Meta and keep Option for localized input
+(when (string-match "apple-darwin" system-configuration)
+  (setq mac-command-modifier 'meta)
+  (setq mac-option-modifier 'none))
 
 ;; make C-z not try to iconify
 (defun iconify-or-deiconify-frame ()
@@ -277,7 +282,9 @@
   :bind (:map ivy-minibuffer-map
               ("M-y" . ivy-next-line)))
 (use-package swiper
-    :bind (("C-s" . swiper)))
+    ;; :bind (("C-s" . swiper))
+    :config
+  (define-key isearch-mode-map "\C-\M-s" 'swiper-from-isearch))
 (use-package ivy-hydra)
 
 (use-package undo-tree)
@@ -286,6 +293,9 @@
   (projectile-mode 1))
 (use-package counsel-projectile :config
   (counsel-projectile-mode 1))
+
+(use-package dockerfile-mode)
+(use-package docker-compose-mode)
 
 ;; (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 

@@ -1,0 +1,10 @@
+[user]
+	name = Brian Downing
+	email = briandowning@granular.ag
+[color]
+	ui = auto
+[push]
+	default = simple
+[gui]
+	fontdiff = -family Consolas -size 10 -weight normal -slant roman -underline 0 -overstrike 0
+	fontui = -family DejaVu_Sans -size 9 -weight normal -slant roman -underline 0 -overstrike 0

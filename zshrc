@@ -29,7 +29,7 @@ setopt no_flow_control
 # completion
 fpath=( $HOME/.zsh/compfuncs $fpath )
 setopt no_beep no_auto_menu list_packed
-if [[ $USER = bdowning ]]; then
+if [[ $USER =~ '^b.*downing$' ]]; then
     # . $HOME/.zcompinstall
     zstyle ':completion:*' verbose yes
     zstyle ':completion:*:descriptions' format '>>>>> %B%d%b <<<<<'
@@ -90,9 +90,9 @@ else
     prompt=':; '
 fi
 
-watch=notme
-WATCHFMT='[%B%T%b] %B%n%b has %a tty %B%l%b%(M: from :)%B%M%b'
-log
+#watch=notme
+#WATCHFMT='[%B%T%b] %B%n%b has %a tty %B%l%b%(M: from :)%B%M%b'
+#log
 
 #if [ $TERM = "xterm" ]; then
 #	stty erase 
