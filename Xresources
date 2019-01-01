@@ -1,11 +1,11 @@
 !Xft.dpi: 93
-Xft.dpi: 96
+!Xft.dpi: 96
 !Xft.dpi: 192
-Xft.rgba: rgb
+!Xft.rgba: rgb
 Xft.hinting: true
 Xft.hintstyle: hintslight
 Xft.antialias: true
-Xft.lcdfilter: lcddefault
+!Xft.lcdfilter: lcddefault
 Xft.embeddedbitmap: false
 
 !{{{ XTERM
