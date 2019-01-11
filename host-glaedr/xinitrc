@@ -29,6 +29,7 @@ export MOZ_USE_XINPUT2=1
 
 #sudo /sbin/modprobe bbswitch
 
+xmonad --recompile
 xmonad
 
 #sudo /sbin/rmmod bbswitch
