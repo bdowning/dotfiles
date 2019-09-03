@@ -61,6 +61,8 @@ URxvt*letterSpace: -1
 !URxvt*foreground: White
 !URxvt*background: Black
 
+URxvt.perl-ext-common: font-size
+
 URxvt*cursorColor: #DCDCCC
 
 ! Zenburn color-scheme
