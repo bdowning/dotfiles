@@ -12,8 +12,8 @@ export GDK_SCALE=2
 
 xrandr --dpi 192
 
-xinput set-prop "SynPS/2 Synaptics TouchPad" "libinput Accel Speed" 0.3
-xinput set-prop "SynPS/2 Synaptics TouchPad" "libinput Disable While Typing Enabled" 0
+xinput set-prop "Synaptics TM3418-002" "libinput Accel Speed" 0.1
+xinput set-prop "Synaptics TM3418-002" "libinput Disable While Typing Enabled" 0
 
 dispwin -I .color-profiles/B156ZAN03_2.icm
 
@@ -28,7 +28,7 @@ redshift -l 40:-88 -t 6500:3800 &
 #export VDPAU_NVIDIA_NO_OVERLAY=1
 #compton --backend glx --glx-no-stencil --glx-no-rebind-pixmap --vsync=opengl-swc --paint-on-overlay --glx-swap-method=2 &
 #compton --backend glx --glx-no-stencil --vsync opengl-swc -b
-compton --backend glx --unredir-if-possible -b
+compton --backend glx --unredir-if-possible --vsync -b
 hsetroot -solid '#2f4f4f'
 dropbox&
 start-pulseaudio-x11
@@ -40,6 +40,7 @@ export MOZ_USE_XINPUT2=1
 
 #sudo /sbin/modprobe bbswitch
 
+xmonad --recompile
 xmonad
 
 #sudo /sbin/rmmod bbswitch

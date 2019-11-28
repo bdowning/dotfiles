@@ -47,7 +47,7 @@ main = do
     --  ppTitle = xmobarColor "green" ""
     --  } <+> updatePointer (TowardsCentre 0.025 0.025),
     --logHook = updatePointer (TowardsCentre 0.025 0.025),
-    borderWidth        = 2,
+    borderWidth        = 4,
     normalBorderColor  = "#383838",
     focusedBorderColor = "#6F6F6F",
     keys = myKeys <+> keys defaultConfig,
@@ -67,8 +67,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList [
   ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q set Master 5%+ unmute"),
   ((0, xF86XK_AudioLowerVolume), spawn "amixer -q set Master 5%- unmute"),
   ((0, xF86XK_AudioMicMute), spawn "amixer -q set Capture toggle"),
-  ((0, xF86XK_MonBrightnessUp), spawn "$HOME/bin/backlight-adjust 5"),
-  ((0, xF86XK_MonBrightnessDown), spawn "$HOME/bin/backlight-adjust -5"),
+  ((0, xF86XK_MonBrightnessUp), spawn "$HOME/bin/backlight-adjust 2"),
+  ((0, xF86XK_MonBrightnessDown), spawn "$HOME/bin/backlight-adjust -2"),
   ((modm, xK_F11), spawn "amixer -q set Master toggle"),
   ((modm, xK_F10), spawn "amixer -q set Master 5%+ unmute"),
   ((modm, xK_F9), spawn "amixer -q set Master 5%- unmute")
