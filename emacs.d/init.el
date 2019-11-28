@@ -267,28 +267,30 @@
 (use-package column-enforce-mode :config
   (add-hook 'prog-mode-hook 'column-enforce-mode))
 
-(use-package magit)
+(use-package magit
+    :bind (("C-l C-m" . magit)))
 
 (use-package flx)
 (use-package smex)
 (use-package wgrep)
-(use-package ivy :config
-  (setq ivy-use-virtual-buffers t
-        ivy-count-format "%d/%d "
-        ivy-re-builders-alist
-        '((swiper . ivy--regex)
-          (t . ivy--regex-fuzzy))
-        ivy-magic-tilde nil)
-  (ivy-mode 1))
-(use-package counsel :config
-  (counsel-mode 1)
-  :bind (:map ivy-minibuffer-map
-              ("M-y" . ivy-next-line)))
-(use-package swiper
-    ;; :bind (("C-s" . swiper))
-    :config
-  (define-key isearch-mode-map "\C-\M-s" 'swiper-from-isearch))
-(use-package ivy-hydra)
+;; (use-package ivy :config
+;;   (setq ivy-use-virtual-buffers t
+;;         ivy-count-format "%d/%d "
+;;         ivy-re-builders-alist
+;;         '((swiper . ivy--regex)
+;;           (t . ivy--regex-fuzzy))
+;;         ivy-magic-tilde nil)
+;;   (ivy-mode 1))
+;; (use-package counsel :config
+;;   (counsel-mode 1)
+;;   :bind (:map ivy-minibuffer-map
+;;               ("M-y" . ivy-next-line)))
+;; (use-package swiper
+;;     ;; :bind (("C-s" . swiper))
+;;     :config
+;;   (define-key isearch-mode-map "\C-\M-s" 'swiper-from-isearch))
+;; (use-package ivy-hydra)
+(ido-mode 'buffers)
 
 (use-package undo-tree)
 
@@ -306,9 +308,13 @@
 
 (use-package coffee-mode)
 
+(use-package cmake-mode)
+
+(use-package groovy-mode)
+
 (use-package terraform-mode)
 
-(use-package cmake-mode)
+(use-package markdown-mode)
 
 ;; (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
