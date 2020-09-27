@@ -1,7 +1,5 @@
 ;; .emacs.d/init.el
 
-(require 'cl)
-
 (require 'package)
 (defun package--save-selected-packages (&optional value)
   "Set and (don't!) save `package-selected-packages' to VALUE."
