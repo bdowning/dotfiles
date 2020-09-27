@@ -1,7 +1,5 @@
 ;; .emacs.d/init.el
 
-(require 'cl)
-
 (require 'package)
 (defun package--save-selected-packages (&optional value)
   "Set and (don't!) save `package-selected-packages' to VALUE."
@@ -238,6 +236,7 @@
 ;;              '(omake-mode omake omake-indent-offset))
 
 (use-package zenburn-theme)
+(load-theme 'zenburn t)
 (use-package dtrt-indent :config
   (dtrt-indent-mode 1))
 (use-package paren-face)
