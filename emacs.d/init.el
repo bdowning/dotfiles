@@ -237,7 +237,9 @@
 ;; (add-to-list 'dtrt-indent-hook-mapping-list
 ;;              '(omake-mode omake omake-indent-offset))
 
-(use-package zenburn-theme)
+(use-package zenburn-theme :config
+  (load-theme 'zenburn t))
+
 (use-package dtrt-indent :config
   (dtrt-indent-mode 1))
 (use-package paren-face)
@@ -315,6 +317,8 @@
 (use-package terraform-mode)
 
 (use-package markdown-mode)
+
+(use-package go-mode)
 
 ;; (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 

@@ -23,7 +23,7 @@ import Data.Maybe
 myManageHook = composeAll 
   [ className =? "Squeak" --> doFloat
   , className =? "Plugin-container" --> doFloat
-  , title =? "TIS-100" --> doIgnore
+  -- , title =? "TIS-100" --> doIgnore
   , isDialog --> doCenterFloat
   , isFullscreen --> doFullFloat
   ]
@@ -61,6 +61,7 @@ main = do
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList [
   ((modm, xK_F12   ), xmonadPrompt defaultXPConfig),
   ((modm, xK_r     ), shellPrompt  defaultXPConfig),
+  ((modm, xK_o     ), spawn "sleep 0.1; $HOME/bin/cycle-res"),
   ((modm, xK_Escape), toggleWS),
   ((modm .|. controlMask .|. shiftMask, xK_l), spawn "xset s activate"),
   ((0, xF86XK_AudioMute), spawn "amixer -q set Master toggle"),
