@@ -73,7 +73,8 @@ alias sl=ls
 PAGER='less'
 
 if [[ $TERM = dumb ]]; then
-    prompt='%m:%~ %!%% '
+    unsetopt zle
+    prompt='$ '
 else
     precmd () { print -rP $'%#%# %B%!%b %B%m%b:%~' }
     case $TERM in
