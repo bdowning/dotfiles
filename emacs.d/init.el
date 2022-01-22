@@ -238,8 +238,6 @@
 (use-package zenburn-theme :config
   (load-theme 'zenburn t))
 
-(use-package dtrt-indent :config
-  (dtrt-indent-mode 1))
 (use-package paren-face)
 
 (use-package company :config
@@ -263,6 +261,10 @@
       (setup-tide-mode)))
   (add-hook 'web-mode-hook #'bd/tsx-setup-tide-mode)
   (flycheck-add-mode 'typescript-tslint 'web-mode))
+
+(use-package dtrt-indent :config
+  (add-to-list 'dtrt-indent-hook-mapping-list '(typescript-mode javascript typescript-indent-level))
+  (dtrt-indent-mode 1))
 
 (use-package column-enforce-mode :config
   (add-hook 'prog-mode-hook 'column-enforce-mode))
