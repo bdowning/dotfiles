@@ -7,8 +7,8 @@ setopt share_history
 setopt hist_expire_dups_first
 setopt hist_find_no_dups
 
-SAVEHIST=10000
-HISTSIZE=12500
+SAVEHIST=100000
+HISTSIZE=125000
 HISTFILE=~/.zsh_history
 
 setopt no_extended_glob
