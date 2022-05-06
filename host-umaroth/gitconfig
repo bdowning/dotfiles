@@ -1,6 +1,7 @@
 [user]
 	name = Brian Downing
 	email = bdowning@paradromics.com
+	signingkey = 185C2EA8167C75D99BF22C5DACAE46DA7EBA3830
 [color]
 	ui = auto
 [push]
@@ -12,3 +13,5 @@
 	algorithm = histogram
 [merge]
 	conflictStyle = diff3
+[commit]
+	gpgsign = true

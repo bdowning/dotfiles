@@ -61,6 +61,8 @@ main = do
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList [
   ((modm, xK_F12   ), xmonadPrompt defaultXPConfig),
   ((modm, xK_r     ), shellPrompt  defaultXPConfig),
+  ((modm, xK_s     ), spawn "maim -s -u | xclip -selection clipboard -t image/png -i"),
+  ((modm .|. shiftMask, xK_s), spawn "maim -u | xclip -selection clipboard -t image/png -i"),
   ((modm, xK_Escape), toggleWS),
   ((0, xF86XK_AudioMute), spawn "amixer -q set Master toggle"),
   ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q set Master 5%+ unmute"),
