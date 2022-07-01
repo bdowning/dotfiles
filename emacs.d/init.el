@@ -262,6 +262,9 @@
   (add-hook 'web-mode-hook #'bd/tsx-setup-tide-mode)
   (flycheck-add-mode 'typescript-tslint 'web-mode))
 
+(use-package editorconfig :config
+  (editorconfig-mode 1))
+
 (use-package dtrt-indent :config
   (add-to-list 'dtrt-indent-hook-mapping-list '(typescript-mode javascript typescript-indent-level))
   (dtrt-indent-mode 1))
@@ -296,7 +299,11 @@
 
 (use-package undo-tree)
 
-(use-package projectile :config
+(use-package projectile
+  :bind
+  (:map projectile-mode-map
+        ("C-c p" . projectile-command-map))
+  :config
   (projectile-mode 1))
 (use-package counsel-projectile :config
   (counsel-projectile-mode 1))
