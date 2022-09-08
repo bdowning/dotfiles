@@ -37,9 +37,9 @@ layout = tiled ||| three ||| noBorders Full
 
 main = do
   --xmproc <- spawnPipe "xmobar"
-  xmonad $ ewmh defaultConfig {
+  xmonad $ ewmhFullscreen $ ewmh $ def {
     terminal = "urxvt",
-    manageHook = myManageHook <+> manageHook defaultConfig <+> manageDocks,
+    manageHook = myManageHook <+> manageHook def,
     -- <+> insertPosition Master Newer 
     layoutHook = smartBorders $ layout,
     --logHook = dynamicLogWithPP xmobarPP {
@@ -50,17 +50,17 @@ main = do
     borderWidth        = 4,
     normalBorderColor  = "#383838",
     focusedBorderColor = "#6F6F6F",
-    keys = myKeys <+> keys defaultConfig,
+    keys = myKeys <+> keys def,
     modMask = mod4Mask,
-    handleEventHook = fullscreenEventHook <+> docksEventHook,
     startupHook = do
         setDefaultCursor xC_left_ptr
-        addEWMHFullscreen
     }
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList [
-  ((modm, xK_F12   ), xmonadPrompt defaultXPConfig),
-  ((modm, xK_r     ), shellPrompt  defaultXPConfig),
+  -- ((modm, xK_F12   ), xmonadPrompt defaultXPConfig),
+  -- ((modm, xK_r     ), shellPrompt  defaultXPConfig),
+  ((modm, xK_s     ), spawn "maim -s -u | xclip -selection clipboard -t image/png -i"),
+  ((modm .|. shiftMask, xK_s), spawn "maim -u | xclip -selection clipboard -t image/png -i"),
   ((modm, xK_o     ), spawn "sleep 0.1; $HOME/bin/cycle-res"),
   ((modm, xK_Escape), toggleWS),
   ((modm .|. controlMask .|. shiftMask, xK_l), spawn "xset s activate"),

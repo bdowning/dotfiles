@@ -1,5 +1,5 @@
 !Xft.dpi: 93
-Xft.dpi: 96
+!Xft.dpi: 96
 !Xft.dpi: 192
 !Xft.rgba: rgb
 Xft.hinting: true
@@ -57,7 +57,7 @@ URxvt*skipScroll: true
 URxvt*saveLines: 10000
 URxvt*font: xft:DejaVu Sans Mono:size=9
 URxvt*boldFont: xft:DejaVu Sans Mono:bold:size=9
-URxvt*letterSpace: -1
+URxvt*letterSpace: -2
 !URxvt*foreground: White
 !URxvt*background: Black
 
