@@ -1,0 +1,36 @@
+#!/bin/sh
+
+if [ -d /etc/X11/xinit/xinitrc.d ]; then
+  for f in /etc/X11/xinit/xinitrc.d/*; do
+    [ -x "$f" ] && . "$f"
+  done
+  unset f
+fi
+
+xrdb .Xresources
+xrdb -merge .Xresources.local
+xset r rate 300 30
+xss-lock slock &
+#xautolock -time 15 -locker 'keepass --lock-all' &
+#xrandr --output DVI-D-1 --auto --output VGA-1 --auto --left-of DVI-D-1
+#xrandr --output LVDS-0 --off
+#xrandr --output DVI-D-0 --auto --output VGA-0 --auto --left-of DVI-D-0
+redshift -l 40:-88 -t 6500:3800 &
+#export VDPAU_NVIDIA_NO_OVERLAY=1
+#compton --backend glx --glx-no-stencil --glx-no-rebind-pixmap --vsync=opengl-swc --paint-on-overlay --glx-swap-method=2 &
+#compton --backend glx --glx-no-stencil --vsync opengl-swc -b
+hsetroot -solid '#2f4f4f'
+#dropbox&
+#start-pulseaudio-x11
+xset b 100
+
+eval $(ssh-agent)
+
+export MOZ_USE_XINPUT2=1
+
+#sudo /sbin/modprobe bbswitch
+
+xmonad --recompile
+xmonad
+
+#sudo /sbin/rmmod bbswitch
