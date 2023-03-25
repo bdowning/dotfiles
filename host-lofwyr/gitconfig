@@ -12,3 +12,5 @@
 	algorithm = histogram
 [merge]
 	conflictStyle = diff3
+[includeIf "gitdir:~/projects/granular/**"]
+	path = ~/.gitconfig.corteva

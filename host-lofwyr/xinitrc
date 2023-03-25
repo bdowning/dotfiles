@@ -20,7 +20,7 @@ redshift -l 40:-88 -t 6500:3800 &
 #compton --backend glx --glx-no-stencil --glx-no-rebind-pixmap --vsync=opengl-swc --paint-on-overlay --glx-swap-method=2 &
 #compton --backend glx --glx-no-stencil --vsync opengl-swc -b
 hsetroot -solid '#2f4f4f'
-#dropbox&
+dropbox&
 #start-pulseaudio-x11
 xset b 100
 
