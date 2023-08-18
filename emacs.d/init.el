@@ -169,6 +169,9 @@
 (add-hook 'c-mode-hook 'bd/set-insert-c-arrow)
 (add-hook 'c++-mode-hook 'bd/set-insert-c-arrow)
 
+;;; makefiles
+(add-to-list 'auto-mode-alist '("\\.mak\\'" . makefile-mode))
+
 ;;; perl-mode
 (add-hook 'perl-mode-hook 'bd/set-insert-c-arrow)
 

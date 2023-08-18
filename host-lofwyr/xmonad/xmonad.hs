@@ -38,7 +38,7 @@ layout = tiled ||| three ||| noBorders Full
 main = do
   --xmproc <- spawnPipe "xmobar"
   xmonad $ ewmhFullscreen $ ewmh $ def {
-    terminal = "urxvt",
+    terminal = "alacritty", -- "urxvt",
     manageHook = myManageHook <+> manageHook def,
     -- <+> insertPosition Master Newer 
     layoutHook = smartBorders $ layout,
