@@ -50,6 +50,7 @@ main = do
     borderWidth        = 4,
     normalBorderColor  = "#383838",
     focusedBorderColor = "#6F6F6F",
+    focusFollowsMouse = True,
     keys = myKeys <+> keys def,
     modMask = mod4Mask,
     startupHook = do

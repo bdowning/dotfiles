@@ -1,0 +1,33 @@
+#!/bin/sh
+
+if [ -d /etc/X11/xinit/xinitrc.d ]; then
+  for f in /etc/X11/xinit/xinitrc.d/*; do
+    [ -x "$f" ] && . "$f"
+  done
+  unset f
+fi
+
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
+export GDK_SCALE=2
+
+xrandr --dpi 192
+
+xinput set-prop "Synaptics TM3418-002" "libinput Accel Speed" 0.1
+xinput set-prop "Synaptics TM3418-002" "libinput Disable While Typing Enabled" 0
+
+dispwin -I .color-profiles/B156ZAN03_2.icm
+
+xrdb .Xresources
+xset r rate 300 30
+xss-lock slock &
+
+redshift -l 40:-88 -t 6500:3800 &
+hsetroot -solid '#2f4f4f'
+start-pulseaudio-x11
+xset b 100
+
+eval $(ssh-agent)
+
+export MOZ_USE_XINPUT2=1
+
+openbox

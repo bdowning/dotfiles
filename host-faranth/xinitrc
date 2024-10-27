@@ -12,10 +12,11 @@ export GDK_SCALE=2
 
 xrandr --dpi 192
 
-xinput set-prop "Synaptics TM3418-002" "libinput Accel Speed" 0.1
-xinput set-prop "Synaptics TM3418-002" "libinput Disable While Typing Enabled" 0
+input_dev="SYNA8017:00 06CB:CEB2 Touchpad"
+xinput set-prop "$input_dev" "libinput Accel Speed" 0.3
+xinput set-prop "$input_dev" "libinput Disable While Typing Enabled" 0
 
-dispwin -I .color-profiles/B156ZAN03_2.icm
+#dispwin -I .color-profiles/B156ZAN03_2.icm
 
 xrdb .Xresources
 xset r rate 300 30
@@ -31,7 +32,7 @@ redshift -l 40:-88 -t 6500:3800 &
 compton --backend glx --unredir-if-possible --vsync -b
 hsetroot -solid '#2f4f4f'
 dropbox&
-start-pulseaudio-x11
+#start-pulseaudio-x11
 xset b 100
 
 eval $(ssh-agent)
