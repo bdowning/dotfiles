@@ -332,7 +332,18 @@
 
 (use-package rust-mode)
 
-(use-package multiple-cursors)
+(use-package multiple-cursors
+    :bind (("C-S-c C-S-c" . mc/edit-lines)
+           ("C->" . mc/mark-next-like-this)
+           ("C-<" . mc/mark-previous-like-this)
+           ("C-c C-<" . mc/mark-all-like-this)))
+
+(use-package expand-region
+  :bind (("C-=" . er/expand-region)))
+
+(use-package lsp-mode)
+
+(use-package powershell)
 
 ;; (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
